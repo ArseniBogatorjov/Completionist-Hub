@@ -15,6 +15,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { AlertTriangle, Loader2, RefreshCw, ShieldCheck } from 'lucide-react';
+import { styles } from '@/lib/constants/styles';
+import { cn } from '@/lib/utils';
 
 interface Props {
   onSyncSuccess?: () => void;
@@ -55,14 +57,12 @@ export default function SteamSyncSection({ onSyncSuccess }: Props) {
 
       setIsModalOpen(false);
       setSteamId('');
-      if (onSyncSuccess) {
-        onSyncSuccess();
-      }
+      onSyncSuccess?.();
     } catch (error) {
       if (error instanceof Error) {
         setApiError(error.message);
       } else {
-        setApiError('An unexpected error occurred during sign up.');
+        setApiError('An unexpected error occurred during sync.');
       }
     } finally {
       setIsLoading(false);
@@ -71,7 +71,7 @@ export default function SteamSyncSection({ onSyncSuccess }: Props) {
 
   return (
     <>
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-5 backdrop-blur">
+      <div className={cn('rounded-xl border p-5', styles.GLASS_CARD)}>
         <form
           onSubmit={handleOpenModal}
           className="flex flex-col gap-3 sm:flex-row sm:items-start"
@@ -85,16 +85,16 @@ export default function SteamSyncSection({ onSyncSuccess }: Props) {
                 setSteamId(e.target.value);
                 if (validationError) setValidationError(null);
               }}
-              className="bg-zinc-950 border-zinc-800 text-zinc-100 focus-visible:ring-emerald-500"
+              className={cn(styles.INPUT, 'focus-visible:ring-emerald-500')}
             />
             {validationError && (
-              <p className="text-xs text-red-400 pl-1">{validationError}</p>
+              <p className="pl-1 text-xs text-red-400">{validationError}</p>
             )}
           </div>
           <Button
             type="submit"
             disabled={isLoading}
-            className="bg-emerald-500 text-zinc-950 hover:bg-emerald-400 font-medium transition-colors"
+            className="bg-emerald-500 font-medium text-zinc-950 transition-colors hover:bg-emerald-400"
           >
             <RefreshCw className="mr-2 h-4 w-4" />
             Sync Library
@@ -109,7 +109,7 @@ export default function SteamSyncSection({ onSyncSuccess }: Props) {
               <AlertTriangle className="h-5 w-5 text-amber-500" />
               Sync Requirements
             </DialogTitle>
-            <DialogDescription className="text-zinc-400 pt-2">
+            <DialogDescription className="pt-2 text-zinc-400">
               Please verify your Steam account configuration before starting the
               import process.
             </DialogDescription>
@@ -117,29 +117,34 @@ export default function SteamSyncSection({ onSyncSuccess }: Props) {
 
           <div className="space-y-3 py-3 text-sm text-zinc-300">
             <div className="flex items-start gap-3 rounded-lg border border-zinc-800 bg-zinc-900/50 p-3">
-              <ShieldCheck className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
+              <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-400" />
               <div>
                 <p className="font-semibold text-zinc-200">Public Profile</p>
-                <p className="text-xs text-zinc-400 mt-0.5">
-                  Set your Steam Privacy Settings for both **Profile** and
-                  **Game details** to **Public**.
+                <p className="mt-0.5 text-xs text-zinc-400">
+                  Set your Steam Privacy Settings for both{' '}
+                  <strong className="text-zinc-200">Profile</strong> and{' '}
+                  <strong className="text-zinc-200">Game details</strong> to{' '}
+                  <strong className="text-zinc-200">Public</strong>.
                 </p>
               </div>
             </div>
 
             <div className="flex items-start gap-3 rounded-lg border border-zinc-800 bg-zinc-900/50 p-3">
-              <RefreshCw className="h-5 w-5 text-cyan-400 shrink-0 mt-0.5" />
+              <RefreshCw className="mt-0.5 h-5 w-5 shrink-0 text-cyan-400" />
               <div>
                 <p className="font-semibold text-zinc-200">Processing Time</p>
-                <p className="text-xs text-zinc-400 mt-0.5">
-                  Large game libraries may take from **30 seconds up to a few
-                  minutes** to complete initial synchronization.
+                <p className="mt-0.5 text-xs text-zinc-400">
+                  Large game libraries may take from{' '}
+                  <strong className="text-zinc-200">
+                    30 seconds up to a few minutes
+                  </strong>{' '}
+                  to complete initial synchronization.
                 </p>
               </div>
             </div>
 
             {apiError && (
-              <p className="text-xs text-red-400 bg-red-950/40 border border-red-800/50 p-2.5 rounded-md">
+              <p className="rounded-md border border-red-800/50 bg-red-950/40 p-2.5 text-xs text-red-400">
                 Sync error: {apiError}
               </p>
             )}

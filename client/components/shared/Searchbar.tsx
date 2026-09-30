@@ -1,5 +1,7 @@
 import { Input } from '@/components/ui/input';
 import { Dispatch, SetStateAction } from 'react';
+import { styles } from '@/lib/constants/styles';
+import { cn } from '@/lib/utils';
 
 interface SearchbarProps {
   search: string;
@@ -18,7 +20,7 @@ export default function Searchbar({
       onChange={(e) => setSearch(e.target.value)}
       type="search"
       placeholder={placeholder}
-      className="bg-black/20 text-zinc-100 transition-all duration-300 hover:border-teal-400/50"
+      className={cn(styles.INPUT)}
     />
   );
 }

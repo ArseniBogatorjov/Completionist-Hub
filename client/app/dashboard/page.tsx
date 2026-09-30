@@ -1,15 +1,12 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api/apiClient';
 import StatisticsSection from '@/components/dashboard/StatisticsSection';
 import GamesList from '@/components/dashboard/GamesList';
 import { useState } from 'react';
 import type { DashboardStats } from '@/types/dashboard/dashboard.types';
-import type {
-  FilterButton,
-  GameFilterOptions,
-} from '@/types/filters/filters.types';
+import type { GameFilterOptions } from '@/types/filters/filters.types';
 import type { LibraryGame } from '@/types/dashboard/game.types';
 import DataErrorPage from '@/components/error/DataErrorPage';
 import { getDisplayedGames } from '@/lib/dashboard/filter-games.utils';
@@ -17,15 +14,11 @@ import Searchbar from '@/components/shared/Searchbar';
 import SteamSyncSection from '@/components/dashboard/SteamSyncSection';
 import FilterButtons from '@/components/shared/FilterButtons';
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton';
-
-const filters: FilterButton<GameFilterOptions>[] = [
-  { value: 'all', label: 'All', className: 'min-w-16' },
-  { value: 'playing', label: 'Playing', className: 'min-w-20' },
-  { value: 'completed', label: 'Completed', className: 'min-w-24' },
-  { value: 'backlog', label: 'Backlog', className: 'min-w-24' },
-];
+import { GAME_FILTERS } from '@/lib/constants/filters';
 
 export default function Dashboard() {
+  const queryClient = useQueryClient();
+
   const {
     data: stats,
     isLoading: isStatsLoading,
@@ -49,6 +42,10 @@ export default function Dashboard() {
 
   const filteredGames = getDisplayedGames(games ?? [], filter, search);
 
+  const handleSyncSuccess = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+  };
+
   if (isStatsLoading || isPlayingLoading) {
     return <DashboardSkeleton />;
   }
@@ -65,12 +62,12 @@ export default function Dashboard() {
           completedGames={stats?.completedGames ?? 0}
           averageCompletionPercent={stats?.averageCompletionPercent ?? 0}
         />
-        <SteamSyncSection />
+        <SteamSyncSection onSyncSuccess={handleSyncSuccess} />
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <FilterButtons
             filter={filter}
             setFilter={setFilter}
-            filters={filters}
+            filters={GAME_FILTERS}
           />
           <Searchbar
             search={search}

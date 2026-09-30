@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Clock, Gamepad2, Trophy } from 'lucide-react';
 import Image from 'next/image';
 import { CompletionStatus } from '@/types/dashboard/game.types';
+import { styles } from '@/lib/constants/styles';
+import { cn } from '@/lib/utils';
 
 interface GameOverallProps {
   name: string;
@@ -27,7 +29,7 @@ export default function GameOverall({
   const playtimeHours = Math.round(playtimeMinutes / 60);
 
   return (
-    <Card className="w-full overflow-hidden border-white/5 bg-black/20 backdrop-blur-md">
+    <Card className={cn('w-full overflow-hidden', styles.GLASS_CARD)}>
       <CardContent className="flex flex-col gap-6 p-6 md:flex-row md:items-center">
         <div className="relative aspect-460/215 w-full shrink-0 overflow-hidden rounded-lg bg-zinc-800/50 text-zinc-500 md:w-80">
           {poster ? (
@@ -56,7 +58,7 @@ export default function GameOverall({
               {status && (
                 <Badge
                   variant="outline"
-                  className="shrink-0 border-teal-500/30 bg-teal-500/10 text-teal-400 uppercase text-xs tracking-wider"
+                  className={cn('shrink-0', styles.ACCENT_BADGE)}
                 >
                   {status}
                 </Badge>
@@ -64,7 +66,7 @@ export default function GameOverall({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 rounded-lg border border-white/5 bg-white/5 p-4 md:grid-cols-2">
+          <div className="grid grid-cols-2 gap-4 rounded-lg border border-white/5 bg-white/5 p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-md bg-zinc-800/80 text-zinc-400">
                 <Clock className="h-5 w-5" />

@@ -9,18 +9,11 @@ import DataErrorPage from '@/components/error/DataErrorPage';
 import AchievementList from '@/components/game/AchievementList';
 import { useState } from 'react';
 import type { AchievementFilterOptions } from '@/types/filters/filters.types';
-import { FilterButton } from '@/types/filters/filters.types';
 import Searchbar from '@/components/shared/Searchbar';
 import { getDisplayedAchievements } from '@/lib/game/filter-achievements.utils';
 import FilterButtons from '@/components/shared/FilterButtons';
 import GameSkeleton from '@/components/game/GameSkeleton';
-
-const filters: FilterButton<AchievementFilterOptions>[] = [
-  { value: 'all', label: 'All', className: 'min-w-16' },
-  { value: 'unlocked', label: 'Unlocked', className: 'min-w-24' },
-  { value: 'locked', label: 'Locked', className: 'min-w-20' },
-  { value: 'missable', label: 'Missable', className: 'min-w-24' },
-];
+import { ACHIEVEMENT_FILTERS } from '@/lib/constants/filters';
 
 export default function GamePage() {
   const [search, setSearch] = useState('');
@@ -70,7 +63,7 @@ export default function GamePage() {
           <FilterButtons
             filter={filter}
             setFilter={setFilter}
-            filters={filters}
+            filters={ACHIEVEMENT_FILTERS}
           />
           <Searchbar
             search={search}

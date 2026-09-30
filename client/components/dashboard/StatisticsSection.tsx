@@ -1,4 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { styles } from '@/lib/constants/styles';
+import { cn } from '@/lib/utils';
 
 interface DashboardStatsProps {
   totalGames: number | undefined;
@@ -7,17 +9,15 @@ interface DashboardStatsProps {
 }
 
 export default function StatisticsSection({
-  totalGames,
-  completedGames,
-  averageCompletionPercent,
+  totalGames = 0,
+  completedGames = 0,
+  averageCompletionPercent = 0,
 }: DashboardStatsProps) {
   return (
     <section>
-      <h2 className="mb-6 text-2xl font-bold tracking-tight">
-        Overall Statistics
-      </h2>
+      <h2 className={styles.SECTION_TITLE}>Overall Statistics</h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <Card className="border-white/5 bg-black/20 backdrop-blur-md">
+        <Card className={cn(styles.GLASS_CARD)}>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-zinc-400">
               Total Games
@@ -28,7 +28,7 @@ export default function StatisticsSection({
           </CardContent>
         </Card>
 
-        <Card className="border-white/5 bg-black/20 backdrop-blur-md">
+        <Card className={cn(styles.GLASS_CARD)}>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-zinc-400">
               Perfect (100%)
@@ -41,7 +41,7 @@ export default function StatisticsSection({
           </CardContent>
         </Card>
 
-        <Card className="border-white/5 bg-black/20 backdrop-blur-md">
+        <Card className={cn(styles.GLASS_CARD)}>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-zinc-400">
               Avg. Completion

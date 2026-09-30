@@ -1,5 +1,6 @@
 import type { LibraryGame } from '@/types/dashboard/game.types';
 import GameCard from '@/components/dashboard/GameCard';
+import { styles } from '@/lib/constants/styles';
 
 interface GamesListProps {
   games: LibraryGame[];
@@ -8,7 +9,7 @@ interface GamesListProps {
 export default function GamesList({ games }: GamesListProps) {
   return (
     <section>
-      <h2 className="mb-6 text-2xl font-bold tracking-tight">Games library</h2>
+      <h2 className={styles.SECTION_TITLE}>Games library</h2>
 
       {games.length === 0 ? (
         <p className="text-zinc-500">No games to display</p>
