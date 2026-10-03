@@ -16,7 +16,7 @@ export default function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link
           href="/"
-          className="group flex items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5"
+          className="group flex items-center gap-2 transition-transform duration-500 hover:-translate-y-0.5"
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-800/50 shadow-lg transition-colors group-hover:bg-teal-400/20 group-hover:shadow-[0_0_15px_rgba(102,252,241,0.2)]">
             <Gamepad2 className="h-6 w-6 text-zinc-100 transition-colors group-hover:text-teal-400" />

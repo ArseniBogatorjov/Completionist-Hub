@@ -10,12 +10,25 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Gamepad2, LayoutDashboard, LogIn, Menu, UserPlus } from 'lucide-react';
+import {
+  Gamepad2,
+  LayoutDashboard,
+  LogIn,
+  LogOut,
+  Menu,
+  User,
+  UserPlus,
+} from 'lucide-react';
 import { useAuth } from '@/providers/AuthProvider';
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    setOpen(false);
+  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -23,7 +36,7 @@ export function MobileNav() {
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden text-zinc-300 hover:text-teal-400"
+          className="text-zinc-300 hover:text-teal-400 md:hidden"
           aria-label="Open Menu"
         >
           <Menu className="h-6 w-6" />
@@ -32,9 +45,9 @@ export function MobileNav() {
 
       <SheetContent
         side="right"
-        className="w-70 border-white/10 bg-zinc-950/95 p-6 backdrop-blur-xl"
+        className="w-70 border-white/10 bg-zinc-950/95 p-6 text-zinc-100 backdrop-blur-xl"
       >
-        <SheetHeader className="text-left pb-4 border-b border-white/10">
+        <SheetHeader className="border-b border-white/10 pb-4 text-left">
           <SheetTitle className="flex items-center gap-2 text-zinc-100">
             <Gamepad2 className="h-5 w-5 text-teal-400" />
             <span>Completionist Hub</span>
@@ -79,6 +92,29 @@ export function MobileNav() {
                   Register
                 </Button>
               </Link>
+            </div>
+          )}
+
+          {!isLoading && user && (
+            <div className="mt-2 border-t border-white/10 pt-4">
+              <div className="mb-3 flex items-center gap-3 px-2">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-teal-400/10">
+                  <User className="h-5 w-5 text-teal-400" />
+                </div>
+
+                <span className="text-sm font-medium text-zinc-200">
+                  {user.username}
+                </span>
+              </div>
+
+              <Button
+                variant="ghost"
+                onClick={handleLogout}
+                className="w-full justify-start text-rose-400 hover:bg-rose-500/10 hover:text-rose-400"
+              >
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </Button>
             </div>
           )}
         </nav>
