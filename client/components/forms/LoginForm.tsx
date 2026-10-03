@@ -11,6 +11,8 @@ import { Button } from '@/components/ui/button';
 import { apiClient } from '@/lib/api/apiClient';
 import { loginSchema } from '@/lib/validations/auth.schema';
 import { useAuth } from '@/providers/AuthProvider';
+import { styles } from '@/lib/constants/styles';
+import { cn } from '@/lib/utils';
 
 export function LoginForm() {
   const router = useRouter();
@@ -42,6 +44,7 @@ export function LoginForm() {
           password: result.data.password,
         }),
       });
+
       await refetchUser();
       router.push('/dashboard');
     } catch (error) {
@@ -64,7 +67,7 @@ export function LoginForm() {
         >
           Email
         </Label>
-        <div className="relative group">
+        <div className="group relative">
           <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 transition-colors" />
           <Input
             id="email"
@@ -72,7 +75,10 @@ export function LoginForm() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="pl-10 border-white/10 bg-black/40 text-zinc-100 focus-visible:ring-1 focus-visible:ring-teal-400/50 transition-all duration-300"
+            className={cn(
+              styles.INPUT,
+              'border-white/10 pl-10 focus-visible:ring-1 focus-visible:ring-teal-400/50',
+            )}
           />
         </div>
       </div>
@@ -84,7 +90,7 @@ export function LoginForm() {
         >
           Password
         </Label>
-        <div className="relative group">
+        <div className="group relative">
           <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 transition-colors" />
           <Input
             id="password"
@@ -92,7 +98,10 @@ export function LoginForm() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="pl-10 border-white/10 bg-black/40 text-zinc-100 focus-visible:ring-1 focus-visible:ring-teal-400/50 transition-all duration-300"
+            className={cn(
+              styles.INPUT,
+              'border-white/10 pl-10 focus-visible:ring-1 focus-visible:ring-teal-400/50',
+            )}
           />
         </div>
       </div>
@@ -106,7 +115,7 @@ export function LoginForm() {
       <Button
         type="submit"
         disabled={loading}
-        className="w-full mt-2 border border-teal-400/50 bg-teal-400/10 text-teal-400 font-medium transition-all duration-300 hover:bg-teal-400 hover:text-black hover:shadow-[0_0_20px_rgba(102,252,241,0.35)] disabled:opacity-50"
+        className="mt-2 w-full border border-teal-400/50 bg-teal-400/10 font-medium text-teal-400 transition-all duration-300 hover:bg-teal-400 hover:text-black hover:shadow-[0_0_20px_rgba(102,252,241,0.35)] disabled:opacity-50"
       >
         <LogIn className="mr-2 h-4 w-4" />
         {loading ? 'Signing In...' : 'Sign In'}

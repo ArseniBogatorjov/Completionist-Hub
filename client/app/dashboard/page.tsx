@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api/apiClient';
 import StatisticsSection from '@/components/dashboard/StatisticsSection';
 import GamesList from '@/components/dashboard/GamesList';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { DashboardStats } from '@/types/dashboard/dashboard.types';
 import type { GameFilterOptions } from '@/types/filters/filters.types';
 import type { LibraryGame } from '@/types/dashboard/game.types';
@@ -40,7 +40,11 @@ export default function Dashboard() {
   const [filter, setFilter] = useState<GameFilterOptions>('all');
   const [search, setSearch] = useState<string>('');
 
-  const filteredGames = getDisplayedGames(games ?? [], filter, search);
+  const filteredGames = useMemo(
+    () => getDisplayedGames(games ?? [], filter, search),
+    [filter, games, search]
+  )
+
 
   const handleSyncSuccess = async () => {
     await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
