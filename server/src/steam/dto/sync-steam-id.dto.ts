@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class SyncSteamDto {
+export class SaveSteamDto {
   @ApiProperty({
     example: '76569999089090909',
   })

@@ -1,7 +1,12 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
-import { SyncSteamDto } from './dto/sync-steam.dto';
 import { ProgressCalculationObject } from './types/steam.types';
 import type {
   SteamAchievement,
@@ -14,6 +19,7 @@ import type {
 } from './types/steam-api.responses';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { ScavengerService } from '../scavenger/scavenger.service';
+import { SaveSteamDto } from './dto/sync-steam-id.dto';
 
 @Injectable()
 export class SteamService {
@@ -344,8 +350,22 @@ export class SteamService {
     }
   }
 
-  public async syncUserGames(userId: string, dto: SyncSteamDto): Promise<void> {
-    const { steamId } = dto;
+  public async syncUserGames(userId: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User does not exist');
+    }
+
+    if (!user.steamId) {
+      throw new BadRequestException('Current user does not have steamId');
+    }
+
+    const steamId = user.steamId;
 
     try {
       await this.validateSteamId(steamId);
@@ -368,7 +388,7 @@ export class SteamService {
       });
 
       const existingGamesMap = new Map<number, string>(
-        existingGames.map((g) => [g.steamAppId, g.id]),
+        existingGames.map((game) => [game.steamAppId, game.id]),
       );
 
       const gameChunks: SteamGame[][] = [];
@@ -419,5 +439,34 @@ export class SteamService {
     if (!player) {
       throw new BadRequestException('Steam account not found');
     }
+  }
+
+  public async saveSteamId(userId: string, dto: SaveSteamDto): Promise<void> {
+    const { steamId } = dto;
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.steamId === steamId) {
+      throw new ConflictException('This Steam ID is already connected');
+    }
+
+    await this.validateSteamId(steamId);
+
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        steamId,
+      },
+    });
   }
 }

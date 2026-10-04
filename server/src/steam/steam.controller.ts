@@ -1,11 +1,18 @@
-import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { SteamService } from './steam.service';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import type { User } from '@prisma/client';
-import { SyncSteamDto } from './dto/sync-steam.dto';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { StatusResponseDto } from '../auth/dto/status-response.dto';
+import { SaveSteamDto } from './dto/sync-steam-id.dto';
 
 @Controller('steam')
 export class SteamController {
@@ -21,10 +28,33 @@ export class SteamController {
   })
   @UseGuards(AuthGuard('jwt'))
   @Post('sync')
-  syncUserGames(@CurrentUser() user: User, @Body() dto: SyncSteamDto) {
+  syncUserGames(@CurrentUser() user: User) {
     this.steamService
-      .syncUserGames(user.id, dto)
+      .syncUserGames(user.id)
       .catch((error) => console.error(error));
     return { message: 'synchronization started' };
+  }
+
+  @ApiOperation({
+    summary: 'Update user steam id',
+    description: 'Updates current user steam id by user id',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: StatusResponseDto,
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'User not found',
+  })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description: 'This Steam ID is already connected',
+  })
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('save')
+  async saveSteamId(@CurrentUser() user: User, @Body() dto: SaveSteamDto) {
+    await this.steamService.saveSteamId(user.id, dto);
+    return { status: 'success' };
   }
 }
