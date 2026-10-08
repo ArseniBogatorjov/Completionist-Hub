@@ -3,7 +3,7 @@
 import type { SubmitEvent } from 'react';
 import { useState } from 'react';
 import { apiClient } from '@/lib/api/apiClient';
-import { steamSyncSchema } from '@/lib/validations/steam.schema';
+import { steamIdSchema } from '@/lib/validations/steam.schema';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,18 +23,18 @@ interface Props {
 }
 
 export default function SteamSyncSection({ onSyncSuccess }: Props) {
-  const [steamId, setSteamId] = useState('');
-  const [validationError, setValidationError] = useState<string | null>(null);
-  const [apiError, setApiError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [steamId, setSteamId] = useState<string>('');
+  const [validationError, setValidationError] = useState<string>('');
+  const [apiError, setApiError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleOpenModal = (e: SubmitEvent) => {
     e.preventDefault();
-    setValidationError(null);
-    setApiError(null);
+    setValidationError('');
+    setApiError('');
 
-    const result = steamSyncSchema.safeParse({ steamId });
+    const result = steamIdSchema.safeParse({ steamId });
 
     if (!result.success) {
       setValidationError(result.error.issues[0]?.message || 'Invalid Steam ID');
@@ -46,7 +46,7 @@ export default function SteamSyncSection({ onSyncSuccess }: Props) {
 
   const handleConfirmSync = async () => {
     setIsLoading(true);
-    setApiError(null);
+    setApiError('');
 
     try {
       await apiClient('/steam/sync', {
@@ -70,7 +70,7 @@ export default function SteamSyncSection({ onSyncSuccess }: Props) {
   };
 
   return (
-    <>
+    <section>
       <div className={cn('rounded-xl border p-5', styles.GLASS_CARD)}>
         <form
           onSubmit={handleOpenModal}
@@ -83,7 +83,7 @@ export default function SteamSyncSection({ onSyncSuccess }: Props) {
               value={steamId}
               onChange={(e) => {
                 setSteamId(e.target.value);
-                if (validationError) setValidationError(null);
+                if (validationError) setValidationError('');
               }}
               className={cn(styles.INPUT, 'focus-visible:ring-emerald-500')}
             />
@@ -178,6 +178,6 @@ export default function SteamSyncSection({ onSyncSuccess }: Props) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </section>
   );
 }

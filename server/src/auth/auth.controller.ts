@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Post,
-  Req,
-  Res,
-  UnauthorizedException,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Req, Res, UnauthorizedException, UseGuards, } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
@@ -43,7 +33,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   @Get('me')
   getMe(@CurrentUser() user: User) {
-    return user;
+    return this.authService.getMe(user.id);
   }
 
   @ApiOperation({

@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -9,10 +10,11 @@ import * as argon2 from 'argon2';
 import { LoginDto } from './dto/login.dto';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import type {
+import {
   JwtPayload,
   LoginResponse,
   RefreshTokenResponse,
+  UserProfileResponse,
 } from './types/auth.types';
 
 @Injectable()
@@ -30,6 +32,27 @@ export class AuthService {
     );
     this.JWT_REFRESH_SECRET =
       configService.getOrThrow<string>('JWT_REFRESH_SECRET');
+  }
+
+  public async getMe(userId: string): Promise<UserProfileResponse> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+        steamId: true,
+        username: true,
+        email: true,
+        avatarUrl: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 
   public async register(dto: RegisterDto): Promise<{ status: string }> {

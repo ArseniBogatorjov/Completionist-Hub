@@ -15,6 +15,7 @@ import SteamSyncSection from '@/components/dashboard/SteamSyncSection';
 import FilterButtons from '@/components/shared/FilterButtons';
 import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton';
 import { GAME_FILTERS } from '@/lib/constants/filters';
+import SaveSteamSection from '@/components/dashboard/SaveSteamSection';
 
 export default function Dashboard() {
   const queryClient = useQueryClient();
@@ -42,9 +43,8 @@ export default function Dashboard() {
 
   const filteredGames = useMemo(
     () => getDisplayedGames(games ?? [], filter, search),
-    [filter, games, search]
-  )
-
+    [filter, games, search],
+  );
 
   const handleSyncSuccess = async () => {
     await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
@@ -67,6 +67,7 @@ export default function Dashboard() {
           averageCompletionPercent={stats?.averageCompletionPercent ?? 0}
         />
         <SteamSyncSection onSyncSuccess={handleSyncSuccess} />
+        <SaveSteamSection />
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <FilterButtons
             filter={filter}

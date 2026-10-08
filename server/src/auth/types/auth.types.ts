@@ -18,3 +18,11 @@ export interface JwtPayload {
   sub: string;
   email: string | null;
 }
+
+export interface UserProfileResponse {
+  id: string;
+  steamId: string | null;
+  username: string;
+  email: string;
+  avatarUrl: string | null;
+}
